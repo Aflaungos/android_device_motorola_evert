@@ -25,28 +25,37 @@
 
 PLATFORM_PATH := device/motorola/evert
 
-# Bootloader
-TARGET_BOOTLOADER_BOARD_NAME := sdm660
-TARGET_NO_BOOTLOADER := true
-TARGET_USES_UEFI := true
-
-# Platform
-TARGET_BOARD_PLATFORM := sdm660
-TARGET_BOARD_PLATFORM_GPU := qcom-adreno512
-TARGET_USES_64_BIT_BINDER := true
+# A/B
+AB_OTA_UPDATER := true
+AB_OTA_PARTITIONS += \
+    system
+BOARD_USES_RECOVERY_AS_BOOT := true
 
 # Architecture
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
-TARGET_CPU_ABI2 :=
+TARGET_CPU_ABI2 := 
 TARGET_CPU_VARIANT := generic
+TARGET_CPU_VARIANT_RUNTIME := cortex-a73
 
 TARGET_2ND_ARCH := arm
 TARGET_2ND_ARCH_VARIANT := armv7-a-neon
 TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := generic
+TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a73
+
+# APEX
+OVERRIDE_TARGET_FLATTEN_APEX := true
+
+# Bootloader
+TARGET_BOOTLOADER_BOARD_NAME := sdm660
+TARGET_NO_BOOTLOADER := true
+TARGET_USES_UEFI := true
+
+# Display
+TARGET_SCREEN_DENSITY := 420
 
 # Enable CPUSets
 ENABLE_CPUSETS := true
@@ -60,9 +69,9 @@ USE_COMMON_BOOTCTRL := false
 # Kernel
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
+TARGET_FORCE_PREBUILT_KERNEL := true
 TARGET_PREBUILT_KERNEL := $(PLATFORM_PATH)/Image.gz-dtb
 BOARD_KERNEL_CMDLINE := console=ttyMSM0,115200,n8 androidboot.console=ttyMSM0 earlycon=msm_serial_dm,0xc170000 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 sched_enable_hmp=1 sched_enable_power_aware=1 service_locator.enable=1 swiotlb=1 androidboot.configfs=true androidboot.usbcontroller=a800000.dwc3 androidboot.hab.csv=2 androidboot.hab.product=evert androidboot.hab.cid=50 androidboot.selinux=permissive
-# For the love of all that is holy, please do not include this in your ROM unless you really want TWRP to not work correctly!
 BOARD_KERNEL_CMDLINE += androidboot.fastboot=1
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 4096
@@ -71,10 +80,19 @@ BOARD_RAMDISK_OFFSET := 0x01000000
 BOARD_MKBOOTIMG_ARGS := --kernel_offset 0x00008000 --ramdisk_offset $(BOARD_RAMDISK_OFFSET) --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
 
 # Partitions
-BOARD_BOOTIMAGE_PARTITION_SIZE := 0x04000000
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x04000000
+BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
+BOARD_BOOTIMAGE_PARTITION_SIZE := 29196288
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 29196288
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 0x0AC000000
-BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
+BOARD_SYSTEMIMAGE_PARTITION_TYPE := ext4
+BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
+TARGET_COPY_OUT_VENDOR := vendor
+
+# Platform
+TARGET_BOARD_PLATFORM := sdm660
+TARGET_USES_64_BIT_BINDER := true
+BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 
 # Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
@@ -83,18 +101,15 @@ TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 
-# A/B device flags
-TARGET_NO_KERNEL := false
-#TARGET_NO_RECOVERY := true
-#BOARD_USES_RECOVERY_AS_BOOT := true
-BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
-AB_OTA_UPDATER := true
-
 # Crypto
 TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_FBE := true
 #TARGET_KEYMASTER_WAIT_FOR_QSEE := true
-PLATFORM_SECURITY_PATCH := 2025-12-31
+
+# Hack: prevent anti rollback
+PLATFORM_SECURITY_PATCH := 2099-12-31
+VENDOR_SECURITY_PATCH := 2099-12-31
+PLATFORM_VERSION := 16.1.0
 
 # TWRP
 TW_THEME := portrait_hdpi
@@ -111,18 +126,9 @@ TW_EXCLUDE_DEFAULT_USB_INIT := true
 TARGET_RECOVERY_DEVICE_MODULES += android.hardware.boot@1.0
 TW_USE_TOOLBOX := true
 TW_EXCLUDE_TWRPAPP := true
-
-# Asian region languages
+TW_INCLUDE_REPACKTOOLS := true
 TW_EXTRA_LANGUAGES := true
-# TW_DEFAULT_LANGUAGE := zh_CN
 
 # Debug flags
-#TWRP_INCLUDE_LOGCAT := true
-#TARGET_USES_LOGD := true
-
-# Workaround for error copying vendor files to recovery ramdisk
-BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
-TARGET_COPY_OUT_VENDOR := vendor
-
-# Installer
-TW_INCLUDE_REPACKTOOLS := true
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USES_LOGD := true
