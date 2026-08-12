@@ -1,3 +1,0 @@
-add_lunch_combo omni_evert-user
-add_lunch_combo omni_evert-userdebug
-add_lunch_combo omni_evert-eng

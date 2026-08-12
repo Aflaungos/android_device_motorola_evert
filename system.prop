@@ -1,1 +1,5 @@
-ro.display.series=Moto G6 Plus
+ro.display.series=Motorola Moto G6 Plus
+ro.product.board=SDM660
+ro.board.platform=sdm660
+ro.crypto.volume.filenames_mode=aes-256-cts
+ro.crypto.volume.contents_mode=ice
