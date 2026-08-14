@@ -44,6 +44,9 @@ TARGET_USES_UEFI := true
 # Display
 TARGET_SCREEN_DENSITY := 420
 
+# Fstab
+TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
+
 # Kernel
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom ehci-hcd.park=3 lpm_levels.sleep_disabled=1 service_locator.enable=1 swiotlb=2048 androidboot.configfs=true sched_enable_hmp=1 sched_enable_power_aware=1 androidboot.usbcontroller=a800000.dwc3 loop.max_part=7 androidboot.veritymode=eio androidboot.boot_devices=soc/c0c4000.sdhci
